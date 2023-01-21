@@ -2,14 +2,13 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { useSearchUsersQuery } from '../store/github/github.api'
 import { useDebounce } from '../hooks/debounce'
-import { useLinkClickHandler } from 'react-router-dom'
 import { useLazyGetUserReposQuery } from '../store/github/github.api'
 import RepoCard from '../components/RepoCard'
 
 
 export default function HomePage() {
 
- const [search, setSearch] = useState('')
+ const [search, setSearch] = useState('Zrossiz')
  const [dropdown, setDropdown] = useState(false)
  const debounced = useDebounce(search)
  const {isLoading, isError, data} = useSearchUsersQuery(debounced, {

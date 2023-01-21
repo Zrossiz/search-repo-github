@@ -8,7 +8,7 @@ import RepoCard from '../components/RepoCard'
 
 export default function HomePage() {
 
- const [search, setSearch] = useState('Zrossiz')
+ const [search, setSearch] = useState('')
  const [dropdown, setDropdown] = useState(false)
  const debounced = useDebounce(search)
  const {isLoading, isError, data} = useSearchUsersQuery(debounced, {

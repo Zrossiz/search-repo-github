@@ -2,6 +2,9 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { useSearchUsersQuery } from '../store/github/github.api'
 import { useDebounce } from '../hooks/debounce'
+import { useLinkClickHandler } from 'react-router-dom'
+import { useLazyGetUserReposQuery } from '../store/github/github.api'
+import RepoCard from '../components/RepoCard'
 
 
 export default function HomePage() {
@@ -14,10 +17,17 @@ export default function HomePage() {
   refetchOnFocus: true
  })
 
+ const [fetchRepos, { isLoading: areReposLoading, data: repos }] = useLazyGetUserReposQuery()
+
  useEffect(() => {
   setDropdown(debounced.length > 3 && data?.length! > 0)
  }, [debounced, data])
  
+ const clickHandler = (username: string) => {
+  fetchRepos(username)
+  setDropdown(false)
+ }
+
  return (
     <div className="flex justify-center pt-10 mx-auto h-screen w-screen">
       { isError && <p className='text-center text-red-600'>Something went wrong...</p> }
@@ -35,12 +45,16 @@ export default function HomePage() {
           { data?.map(user => (
             <li 
               key={user.id}
+              onClick={() => clickHandler(user.login)}
               className="py-2 px-4 hover:bg-gray-500 hover:text-white transition-colors: cursor-pointer"
             >{ user.login }</li>
           )) }
         </ul>}
+        <div className="container">
+          { areReposLoading && <p className="text-center"> loading</p> }
+          { repos?.map(repo => <RepoCard repo={repo} key={repo.id} />) }
+        </div>
       </div>
-
     </div>
   )
 }
